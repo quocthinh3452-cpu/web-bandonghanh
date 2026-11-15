@@ -8,6 +8,8 @@ import com.project.companion.infrastructure.persistence.repository.UserRepositor
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -26,9 +28,20 @@ public class BookingPersistenceAdapter implements BookingOutPort {
     public void saveBooking(BookingEntity bookingEntity) {
         bookingRepository.save(bookingEntity);
     }
-    // ... code cũ giữ nguyên
+
     @Override
     public java.util.List<BookingEntity> findBookingsByCustomerId(Long customerId) {
         return bookingRepository.findByCustomerIdOrderByBookingDateDesc(customerId);
+    }
+    @Override
+    public Optional<BookingEntity> findBookingById(Long bookingId) {
+        return bookingRepository.findById(bookingId);
+    }
+
+    @Override
+    public List<BookingEntity> findActiveBookingsByCompanionAndDate(Long companionId, LocalDate date) {
+        return bookingRepository.findByCompanionIdAndBookingDateAndStatusIn(
+                companionId, date, List.of((byte) 0, (byte) 1)
+        );
     }
 }

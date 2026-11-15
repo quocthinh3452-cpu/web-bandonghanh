@@ -1,6 +1,8 @@
 package com.project.companion.presentation.controller;
 
+import com.project.companion.application.port.in.CancelBookingInPort;
 import com.project.companion.application.port.in.CreateBookingInPort;
+import com.project.companion.application.port.in.GetCompanionBookedSlotsInPort;
 import com.project.companion.application.port.in.GetCustomerBookingsInPort;
 import com.project.companion.application.usecase.GetCompanionDetailUseCase;
 import com.project.companion.application.usecase.SearchCompanionUseCase;
@@ -19,6 +21,9 @@ public class CustomerController {
     // Trong CustomerController.java
     private final CreateBookingInPort createBookingInPort;
     private final GetCustomerBookingsInPort getCustomerBookingsInPort;
+
+    private final CancelBookingInPort cancelBookingInPort;
+    private final GetCompanionBookedSlotsInPort getCompanionBookedSlotsInPort;
     @GetMapping("/companions")
     public ResponseEntity<?> search(
             @RequestParam(required = false) String location,
@@ -48,6 +53,28 @@ public class CustomerController {
     public ResponseEntity<?> getBookingHistory(@PathVariable Long customerId) {
         try {
             return ResponseEntity.ok(getCustomerBookingsInPort.execute(customerId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // API Hủy lịch đặt
+    @DeleteMapping("/bookings/{bookingId}")
+    public ResponseEntity<?> cancelBooking(@PathVariable Long bookingId) {
+        try {
+            return ResponseEntity.ok(cancelBookingInPort.execute(bookingId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // API Xem các khung giờ đã bận trong ngày của người đồng hành
+    @GetMapping("/companions/{companionId}/booked-slots")
+    public ResponseEntity<?> getBookedSlots(
+            @PathVariable Long companionId,
+            @RequestParam java.time.LocalDate date) {
+        try {
+            return ResponseEntity.ok(getCompanionBookedSlotsInPort.execute(companionId, date));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

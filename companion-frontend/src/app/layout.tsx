@@ -1,33 +1,16 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import './globals.css';
+import { AuthProvider } from '@/shared/context/AuthContext';
 
-// Chọn font chữ hiện đại
-const inter = Inter({ subsets: ["latin", "vietnamese"] });
-
-export const metadata: Metadata = {
-  title: "T-Companion | Thuê Bạn Đồng Hành",
-  description: "Nền tảng thuê bạn đồng hành, chơi game, giải trí số 1",
+export const metadata = {
+  title: 'T-Companion | Thuê Bạn Đồng Hành',
+  description: 'Nền tảng kết nối và đặt lịch bạn đồng hành',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi">
-      {/* Cấu trúc Layout: Navbar -> Nội dung chính (children) -> Footer */}
-      <body className={`${inter.className} bg-[#0b0b0f] text-gray-200 min-h-screen flex flex-col`}>
-        <Navbar />
-        
-        <main className="flex-grow">
-          {children}
-        </main>
-        
-        <Footer />
+      <body className="bg-[#0b0b0f] text-white antialiased">
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
